@@ -7,6 +7,9 @@
 %%% TEST DESCRIPTIONS %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
+my_test() ->
+    [?assert(7 == 6), ?assert(4 == 4)].
+
 start_link_test() ->
     {"The server can be started",
      ?setup(fun is_registered/1)}.
@@ -36,4 +39,7 @@ is_registered(Pid) ->
      ?_assertEqual(Pid, whereis(kitty_server2))].
 
 order_cat_empty_stock(Pid) ->
-    kitty_server2:order_cat(Pid, 'Drew', red, 'Red cat').
+    % Res = kitty_server2:order_cat(Pid, 'Drew', red, 'Red cat'),
+    %[?assert(a == {anorder, 'Drew', red, 'Red cat'})].
+    [?assert(3 == 6), ?assert(4 == 4)].
+
