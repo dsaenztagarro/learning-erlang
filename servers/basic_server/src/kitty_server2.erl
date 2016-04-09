@@ -44,5 +44,5 @@ make_cat(Name, Col, Desc) ->
     #cat{name=Name, color=Col, description=Desc}.
 
 terminate(Cats) ->
-    [io:format("~p was set free. ~n", [C#cat.name]) || C <- Cats],
+    % [io:format("~p was set free. ~n", [C#cat.name]) || C <- Cats],
     exit(normal).
