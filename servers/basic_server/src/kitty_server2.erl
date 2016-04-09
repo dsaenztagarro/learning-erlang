@@ -1,4 +1,5 @@
 -module(kitty_server2).
+-include_lib("eunit/include/eunit.hrl").
 -export([start_link/0, order_cat/4, return_cat/2, close_shop/1]).
 -export([init/1, handle_call/3, handle_cast/2]).
 

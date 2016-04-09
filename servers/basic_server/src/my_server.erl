@@ -6,7 +6,9 @@ start(Module, InitialState) ->
     spawn(fun() -> init(Module, InitialState) end).
 
 start_link(Module, InitialState) ->
-    spawn_link(fun() -> init(Module, InitialState) end).
+    Pid = spawn_link(fun() -> init(Module, InitialState) end),
+    register(Module, Pid),
+    Pid.
 
 call(Pid, Msg) ->
     Ref = erlang:monitor(process, Pid),
