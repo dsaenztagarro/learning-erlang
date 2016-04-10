@@ -1,4 +1,4 @@
-https://travis-ci.org/dsaenztagarro/learning-erlang.svg?branch=master
+[![Build Status](https://travis-ci.org/dsaenztagarro/learning-erlang.svg?branch=master)](https://travis-ci.org/dsaenztagarro/learning-erlang)
 
 # learning-erlang
 
