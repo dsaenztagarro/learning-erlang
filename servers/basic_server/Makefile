@@ -1,6 +1,9 @@
-.PHONY: compile shell test version
+.PHONY: clean compile shell test version
 
-compile:
+clean:
+	rm -rf ebin/; mkdir ebin/
+
+compile: clean
 	erl -make
 
 shell:
