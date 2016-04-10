@@ -1,4 +1,4 @@
-.PHONY: compile shell test
+.PHONY: compile shell test version
 
 compile:
 	erl -make
@@ -7,4 +7,7 @@ shell:
 	erl -pa ebin/
 
 test: compile
-	erl -pa ebin/ -eval 'eunit:test(kitty_server2_test, [verbose])' -eval 'init:stop()'
+	erl -pa ebin/ -eval 'eunit:test([kitty_gen_server_test, kitty_server2_test], [verbose])' -eval 'init:stop()'
+
+version:
+	@erl -eval '{ok, Version} = file:read_file(filename:join([code:root_dir(), "releases", erlang:system_info(otp_release), "OTP_VERSION"])), erlang:display(erlang:binary_to_list(Version)), halt().' -noshell

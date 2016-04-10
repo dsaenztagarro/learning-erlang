@@ -1,9 +1,9 @@
--module(kitty_server2_test).
+-module(kitty_gen_server_test).
 -include_lib("eunit/include/eunit.hrl").
 
 -define(setup(F), {setup,
-                   fun() -> kitty_server2:start_link() end,
-                   fun(Pid) -> kitty_server2:close_shop(Pid) end,
+                   fun() -> {ok, Pid} = kitty_gen_server:start_link(), Pid end,
+                   fun(Pid) -> kitty_gen_server:close_shop(Pid) end,
                    F}).
 
 %% Tests
@@ -22,14 +22,13 @@ order_cat_test_() ->
 
 is_registered(Pid) ->
     [?_assert(erlang:is_process_alive(Pid)),
-     ?_assertEqual(Pid, whereis(kitty_server2))].
+     ?_assertEqual(Pid, whereis(kitty_gen_server))].
 
 order_cat_empty_stock(Pid) ->
-    Res = kitty_server2:order_cat(Pid, 'Drew', red, 'Red cat'),
+    Res = kitty_gen_server:order_cat(Pid, 'Drew', red, 'Red cat'),
     [?_assert(Res == {cat, 'Drew', red, 'Red cat'})].
 
 order_cat_with_stock(Pid) ->
-    kitty_server2:return_cat(Pid, {cat, 'Simon', blue, 'Blue cat'}),
-    Res = kitty_server2:order_cat(Pid, 'Drew', red, 'Red cat'),
+    kitty_gen_server:return_cat(Pid, {cat, 'Simon', blue, 'Blue cat'}),
+    Res = kitty_gen_server:order_cat(Pid, 'Drew', red, 'Red cat'),
     [?_assert(Res == {cat, 'Simon', blue, 'Blue cat'})].
-

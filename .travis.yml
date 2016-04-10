@@ -1,0 +1,5 @@
+language: erlang
+otp_release:
+  - 18.2.1
+before_script:
+  - cd servers/basic_server
