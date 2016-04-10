@@ -1,4 +1,6 @@
-# Running examples
+https://travis-ci.org/dsaenztagarro/learning-erlang.svg?branch=master
 
-- `erl -make` compiles project based on `Emakefile`
-- `erl -pa ebin/` loads erlang shell and searches for modules in path `ebin/`
+# learning-erlang
+
+TDD approach to [Learn You Some Erlang For Great
+Good!](http://learnyousomeerlang.com)
