@@ -1,12 +1,13 @@
 -module(kitty_server2_test).
 -include_lib("eunit/include/eunit.hrl").
 
+% Macro for creating fixtures
 -define(setup(F), {setup,
                    fun() -> kitty_server2:start_link() end,
                    fun(Pid) -> kitty_server2:close_shop(Pid) end,
                    F}).
 
-%% Tests
+%% Tests Generators
 
 start_link_test_() ->
     {"The server can be started",
