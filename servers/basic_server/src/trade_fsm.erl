@@ -1,4 +1,5 @@
 -module(trade_fsm).
+-include_lib("eunit/include/eunit.hrl").
 -behaviour(gen_fsm).
 
 -record(state, {name="",
@@ -9,7 +10,7 @@
                 from}).
 
 %% public API
--export([start/1, start_link/1]).
+-export([start/1, start_link/1, cancel/1]).
 
 %% gen_fms callbacks
 -export([init/1, handle_event/3, handle_sync_event/4, handle_info/3,
@@ -28,11 +29,17 @@ cancel(OwnPid) ->
 %% gen_fsm behaviour
 
 init(Name) ->
+    debugMsg(">>> init"),
     {ok, idle, #state{name=Name}}.
 
-handle_event(cancel, _StateName, S=#state{}) ->
-    notice(S, "received cancel event", []),
-    {stop, other_cancelled, S};
+idle(Event, Data) ->
+    debugMsg(">>> idle"),
+    unexpected(Event, idle),
+    {next_state, idle, Data}.
+
+% handle_event(cancel, _StateName, S=#state{}) ->
+%     notice(S, "received cancel event", []),
+%     {stop, other_cancelled, S};
 
 handle_event(Event, StateName, Data) ->
     unexpected(Event, StateName),

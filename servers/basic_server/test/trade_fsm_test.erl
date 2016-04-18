@@ -17,6 +17,6 @@ start_link_test_() ->
 
 is_registered(Pid) ->
     [?_assert(erlang:is_process_alive(Pid)),
-     ?_assertEqual(Pid, whereis(kitty_server2))].
+     ?_assertEqual(Pid, whereis(trade_fsm))].
 
 
