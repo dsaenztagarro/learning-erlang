@@ -63,6 +63,6 @@ notice(#state{name=N}, Str, Args) ->
 
 %% Allows to log unexpected messages.
 unexpected(Msg, State) ->
-    io:format("~p received unknown eent ~p while in state ~p~n",
+    io:format("~p received unknown event ~p while in state ~p~n",
               [self(), Msg, State]).
 

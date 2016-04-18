@@ -1,7 +1,8 @@
 -module(kitty_gen_server).
 -behavior(gen_server).
 -export([start_link/0, order_cat/4, return_cat/2, close_shop/1]).
--export([init/1, handle_call/3, handle_cast/2, terminate/2]).
+-export([init/1, handle_call/3, handle_cast/2, handle_info/2, code_change/3,
+         terminate/2]).
 -record(cat, {name, color=green, description}).
 
 
@@ -27,7 +28,7 @@ close_shop(Pid) ->
 init([]) ->
     {ok, []}.
 
-handle_call({order, Name, Color, Description}, From, Cats) ->
+handle_call({order, Name, Color, Description}, _From, Cats) ->
     if Cats =:= [] ->
         {reply, make_cat(Name, Color, Description), Cats};
        Cats =/= [] ->
@@ -40,13 +41,15 @@ handle_call(terminate, _From, Cats) ->
 handle_cast({return, Cat = #cat{}}, Cats) ->
     {noreply, [Cat|Cats]}.
 
-handle_info(Msg, Cats) ->
+handle_info(_Msg, Cats) ->
     % io:format("Unexpected message"),
     {noreply, Cats}.
 
-terminate(normal, Cats) ->
-    ok.
+code_change(_OldVsn, Data, _Extra) ->
+    {ok, Data}.
 
+terminate(normal, _Cats) ->
+    ok.
 
 %% Private functions
 
