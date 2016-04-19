@@ -3,7 +3,7 @@
 
 % Macro for creating fixtures
 -define(setup(F), {setup,
-                   fun() -> trade_fsm:start_link() end,
+                   fun() -> {ok, Pid} = trade_fsm:start_link("client1"), Pid end,
                    fun(Pid) -> trade_fsm:cancel(Pid) end,
                    F}).
 

@@ -29,11 +29,10 @@ cancel(OwnPid) ->
 %% gen_fsm behaviour
 
 init(Name) ->
-    debugMsg(">>> init"),
     {ok, idle, #state{name=Name}}.
 
 idle(Event, Data) ->
-    debugMsg(">>> idle"),
+    ?debugMsg(">>> idle"),
     unexpected(Event, idle),
     {next_state, idle, Data}.
 
@@ -44,6 +43,9 @@ idle(Event, Data) ->
 handle_event(Event, StateName, Data) ->
     unexpected(Event, StateName),
     {next_state, StateName, Data}.
+
+handle_sync_event(cancel, _From, _StateName, S = #state{}) ->
+    {stop, normal, ok, S};
 
 handle_sync_event(Event, _From, StateName, Data) ->
     unexpected(Event, StateName),
