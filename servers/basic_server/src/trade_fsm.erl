@@ -1,5 +1,4 @@
 -module(trade_fsm).
--include_lib("eunit/include/eunit.hrl").
 -behaviour(gen_fsm).
 
 -record(state, {name="",
@@ -10,11 +9,13 @@
                 from}).
 
 %% public API
--export([start/1, start_link/1, cancel/1]).
+-export([start/1, start_link/1, cancel/1, introspection_statename/1]).
 
 %% gen_fms callbacks
 -export([init/1, handle_event/3, handle_sync_event/4, handle_info/3,
          terminate/3, code_change/4]).
+
+%% public API
 
 start(Name) ->
     gen_fsm:start(?MODULE, [Name], []).
@@ -22,9 +23,11 @@ start(Name) ->
 start_link(Name) ->
     gen_fsm:start_link({local, ?MODULE}, ?MODULE, [Name], []).
 
-% Cancel the transaction
 cancel(OwnPid) ->
     gen_fsm:sync_send_all_state_event(OwnPid, cancel).
+
+introspection_statename(StateName) ->
+    gen_fsm:sync_send_all_state_event(StateName,which_statename).
 
 %% gen_fsm behaviour
 
@@ -32,7 +35,6 @@ init(Name) ->
     {ok, idle, #state{name=Name}}.
 
 idle(Event, Data) ->
-    ?debugMsg(">>> idle"),
     unexpected(Event, idle),
     {next_state, idle, Data}.
 
@@ -46,6 +48,9 @@ handle_event(Event, StateName, Data) ->
 
 handle_sync_event(cancel, _From, _StateName, S = #state{}) ->
     {stop, normal, ok, S};
+
+handle_sync_event(which_statename, _From, StateName, LoopData) ->
+    {reply, StateName, StateName, LoopData};
 
 handle_sync_event(Event, _From, StateName, Data) ->
     unexpected(Event, StateName),
