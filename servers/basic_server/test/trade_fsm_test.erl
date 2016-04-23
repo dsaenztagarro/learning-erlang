@@ -1,5 +1,6 @@
 -module(trade_fsm_test).
 -include_lib("eunit/include/eunit.hrl").
+-include("include/eunit_fsm.hrl").
 
 % Macro for creating fixtures
 -define(setup(Instantiator), {setup,
@@ -24,10 +25,6 @@ started_properly_test_() ->
     {"The fsm is started propertly",
      ?setup(fun valid_initial_status/1)}.
 
-valid_initial_status_test_() ->
-    {"The initial status of fsm is 'idle'",
-     ?setup(fun valid_initial_status2/1)}.
-
 %% Instantiators
 
 is_registered(Pid) ->
@@ -35,10 +32,4 @@ is_registered(Pid) ->
      ?_assertEqual(Pid, whereis(trade_fsm))].
 
 valid_initial_status(Pid) ->
-    [?_assertEqual(idle, trade_fsm:introspection_statename(Pid))].
-
-valid_initial_status2(Pid) ->
-    fun() ->
-        {CurrentStateName, _CurrentStateData} = sys:get_state(Pid),
-        ?assertEqual(idle, CurrentStateName)
-    end.
+    ?fsm_test(Pid, [{state,is,idle}]).
