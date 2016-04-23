@@ -21,9 +21,12 @@ start_link_test_() ->
      ?setup(fun is_registered/1)}.
 
 started_properly_test_() ->
-    {"The fsm is started propertly in idle status",
+    {"The fsm is started propertly",
      ?setup(fun valid_initial_status/1)}.
 
+valid_initial_status_test_() ->
+    {"The initial status of fsm is 'idle'",
+     ?setup(fun valid_initial_status2/1)}.
 
 %% Instantiators
 
@@ -32,11 +35,10 @@ is_registered(Pid) ->
      ?_assertEqual(Pid, whereis(trade_fsm))].
 
 valid_initial_status(Pid) ->
-    valid_status(Pid, idle).
+    [?_assertEqual(idle, trade_fsm:introspection_statename(Pid))].
 
-%% Helpers
-
-valid_status(Pid, StatusName) ->
-    [?_assertEqual(StatusName, trade_fsm:introspection_statename(Pid))].
-
-
+valid_initial_status2(Pid) ->
+    fun() ->
+        {CurrentStateName, _CurrentStateData} = sys:get_state(Pid),
+        ?assertEqual(idle, CurrentStateName)
+    end.
