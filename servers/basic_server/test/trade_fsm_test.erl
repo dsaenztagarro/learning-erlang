@@ -25,6 +25,10 @@ started_properly_test_() ->
     {"The fsm is started propertly",
      ?setup(fun valid_initial_status/1)}.
 
+ask_begin_session_test_() ->
+    {"The fsm sends begin session message to client",
+     ?setup(fun sends_negotiate_message/1)}.
+
 %% Instantiators
 
 is_registered(Pid) ->
@@ -33,3 +37,19 @@ is_registered(Pid) ->
 
 valid_initial_status(Pid) ->
     ?fsm_test(Pid, [{state,is,idle}]).
+
+sends_negotiate_message(Pid) ->
+    fun() ->
+        OtherPid = self(),
+        spawn(fun() -> trade_fsm:trade(Pid, OtherPid) end),
+        Message = {'$gen_event',{ask_negotiate, Pid}},
+        receive
+            Message -> ok
+        after 5000 ->
+            erlang:error({receive_message_failed,
+                          [{module, ?MODULE},
+                           {line, ?LINE},
+                           {expected, Message},
+                           {value, empty}]})
+        end
+    end.

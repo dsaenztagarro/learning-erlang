@@ -1,4 +1,5 @@
 -module(trade_fsm).
+-include_lib("eunit/include/eunit.hrl").
 -behaviour(gen_fsm).
 
 -record(state, {name="",
@@ -9,7 +10,7 @@
                 from}).
 
 %% public API
--export([start/1, start_link/1, cancel/1, introspection_statename/1]).
+-export([start/1, start_link/1, cancel/1, trade/2, idle/3, introspection_statename/1]).
 
 %% gen_fms callbacks
 -export([init/1, handle_event/3, handle_sync_event/4, handle_info/3,
@@ -26,6 +27,9 @@ start_link(Name) ->
 cancel(OwnPid) ->
     gen_fsm:sync_send_all_state_event(OwnPid, cancel).
 
+trade(OwnPid, OtherPid) ->
+    gen_fsm:sync_send_event(OwnPid, {negotiate, OtherPid}, 30000).
+
 introspection_statename(StateName) ->
     gen_fsm:sync_send_all_state_event(StateName,which_statename).
 
@@ -33,6 +37,10 @@ introspection_statename(StateName) ->
 
 init(Name) ->
     {ok, idle, #state{name=Name}}.
+
+idle({negotiate, OtherPid}, From, S=#state{}) ->
+    ask_negotiate(OtherPid, self()),
+    {next_state, idle, S}.
 
 idle(Event, Data) ->
     unexpected(Event, idle),
@@ -80,3 +88,5 @@ unexpected(Msg, State) ->
     io:format("~p received unknown event ~p while in state ~p~n",
               [self(), Msg, State]).
 
+ask_negotiate(OtherPid, OwnPid) ->
+    gen_fsm:send_event(OtherPid, {ask_negotiate, OwnPid}).
